@@ -1,6 +1,6 @@
 <script>
-	const NUM_ROWS = 3;
-	const NUM_COLS = 3;
+	const NUM_ROWS = 4;
+	const NUM_COLS = 10;
 
 	const DIRECTIONS = ['left', 'right', 'top', 'bottom'];
 	const COLOR_LIST = ['red', 'goldenrod', 'orange', 'aliceblue'];
@@ -28,7 +28,7 @@
 			tile.entropy = 100;
 			tile.color = COLOR_LIST[Math.floor(Math.random() * COLOR_LIST.length)];
 
-			computedGrid[Math.floor(i / 3)][i % 3] = tile;
+			computedGrid[Math.floor(i / NUM_COLS)][i % NUM_COLS] = tile;
 		}
 	}
 </script>
@@ -57,8 +57,8 @@
 
 <style lang="scss">
 	.grid {
-		--tile-width: 200px;
-		--tile-gap: 2px;
+		--tile-width: 150px;
+		--tile-gap: 0px;
 
 		display: flex;
 		flex-direction: column;
@@ -72,7 +72,7 @@
 			.tile {
 				width: var(--tile-width);
 				height: var(--tile-width);
-				border: 1px solid black;
+				border: 1px solid #999;
 
 				display: flex;
 				justify-content: center;
