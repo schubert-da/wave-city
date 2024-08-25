@@ -1,5 +1,8 @@
 <script>
-	const NUM_ROWS = 4;
+	import { collapseTiles, computeEntropy } from '$lib/utils/waveFunction';
+	import { TILE_SET } from '$lib/utils/PlayGroundTiles';
+
+	const NUM_ROWS = 5;
 	const NUM_COLS = 10;
 
 	const DIRECTIONS = ['left', 'right', 'top', 'bottom'];
@@ -11,8 +14,34 @@
 	);
 
 	initTiles();
+	tiles = collapseTiles(tiles, NUM_ROWS, NUM_COLS);
+
+	tiles.forEach((tile, index) => {
+		computedGrid[Math.floor(index / NUM_COLS)][index % NUM_COLS] = tile;
+	});
 
 	function initTiles() {
+		tiles = Array.from({ length: NUM_ROWS * NUM_COLS }, () => ({}));
+
+		for (let i = 0; i < tiles.length; i++) {
+			let tile = tiles[i];
+
+			tile.collapsed = false;
+			tile.connections = {
+				top: false,
+				bottom: false,
+				left: false,
+				right: false
+			};
+
+			tile.entropy = Math.log2(TILE_SET.length);
+			tile.color = 'none';
+
+			computedGrid[Math.floor(i / NUM_COLS)][i % NUM_COLS] = tile;
+		}
+	}
+
+	function randomInitTiles() {
 		tiles = Array.from({ length: NUM_ROWS * NUM_COLS }, () => ({}));
 
 		for (let i = 0; i < tiles.length; i++) {

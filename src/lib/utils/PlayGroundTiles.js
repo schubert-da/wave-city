@@ -89,6 +89,44 @@ export const TILE_SET = [
             connection: false
         }
     },
-
-
+    // TOP RIGHT L TILE
+    {
+        top: {
+            connection: true
+        },
+        right: {
+            connection: true
+        },
+        bottom: {
+            connection: false
+        },
+        left: {
+            connection: false
+        }
+    },
+    // BOTTOM LEFT L TILE
+    {
+        top: {
+            connection: false
+        },
+        right: {
+            connection: false
+        },
+        bottom: {
+            connection: true
+        },
+        left: {
+            connection: true
+        }
+    },
 ]
+
+export const TILE_SET_MAP = {
+    0: 'BLANK',
+    1: 'CROSS',
+    2: 'HORIZONTAL LINE',
+    3: 'VERTICAL LINE',
+    4: 'LEFT T',
+    5: 'RIGHT T',
+    6: 'TOP RIGHT L',
+}

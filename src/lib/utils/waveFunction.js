@@ -1,24 +1,125 @@
-import { TILE_SET } from "./PlayGroundTiles";
+import { TILE_SET, TILE_SET_MAP } from "./PlayGroundTiles";
 
-function collapseTiles(tiles, NUM_ROWS, NUM_COLS) {
+export function collapseTiles(tiles, NUM_ROWS, NUM_COLS) {
 
     let allCollapsed = false;
+    let iterations = 0;
 
     while (allCollapsed === false) {
+        console.log('starting iteration:', iterations);
+
         // 1. Find the tile with the least entropy
         let minEntropy = 1000;
-        tiles.forEach(tile => {
+        let minEntropyTileIndex = -1;
+
+        tiles.forEach((tile, index) => {
             if (tile.entropy < minEntropy && tile.collapsed === false) {
                 minEntropy = tile.entropy;
             }
         });
 
-        // 2. Collapse the tile
+        let tilesWithMinEntropy = tiles.filter(tile => tile.entropy === minEntropy && tile.collapsed === false);
+        let chosenTile = tilesWithMinEntropy[Math.floor(Math.random() * tilesWithMinEntropy.length)];
+        minEntropyTileIndex = tiles.indexOf(chosenTile);
+
+        if (minEntropyTileIndex != -1) {
+
+            // 2. Collapse the tile
+            let tileOptions = getTileOptions(tiles, minEntropyTileIndex, NUM_ROWS, NUM_COLS);
+
+            if (tileOptions.length !== 0) {
+                let chosenTileIndex = Math.floor(Math.random() * tileOptions.length)
+                let chosenTileConfig = tileOptions[chosenTileIndex];
+
+                // console.log('tileOptions', tileOptions);
+                // console.log('minEntropyTileIndex', minEntropyTileIndex);
+                // console.log('min Tile', tiles[minEntropyTileIndex]);
+                // console.log('chosenTileConfig', chosenTileConfig);
+
+                let tempTiles = [...tiles];
+
+                console.log(`assigning tile ${TILE_SET_MAP[chosenTileIndex]} to index: ${minEntropyTileIndex}`);
+                tempTiles[minEntropyTileIndex] = {
+                    order: iterations,
+                    collapsed: true,
+                    connections: {
+                        top: chosenTileConfig.top.connection,
+                        bottom: chosenTileConfig.bottom.connection,
+                        left: chosenTileConfig.left.connection,
+                        right: chosenTileConfig.right.connection
+                    },
+                    entropy: 0,
+                    color: "TBD"
+                }
+
+                tiles = tempTiles;
+            } else {
+                console.log('NO OPTIONS FOR TILE', minEntropyTileIndex);
+            }
+
+        }
+
         // 3. Update the entropy of the surrounding tiles
+        tiles = updateSurroundingEntropy(tiles, minEntropyTileIndex, NUM_ROWS, NUM_COLS);
+
+        if (tiles.filter(tile => tile.entropy === 0) === tiles.length || iterations > NUM_COLS * NUM_ROWS) {
+            allCollapsed = true;
+            console.log('ALL COLLAPSED', allCollapsed);
+        }
+
+        console.log('tiles', tiles.slice());
+        iterations++;
     }
+
+    return tiles;
 }
 
-function getTileEntropy(tiles, tileIndex, NUM_ROWS, NUM_COLS) {
+function updateSurroundingEntropy(tiles, tileIndex, NUM_ROWS, NUM_COLS) {
+    let chosenTile = tiles[tileIndex];
+
+    let topTile = tileIndex - NUM_COLS < 0 ? null : tiles[tileIndex - NUM_COLS];
+    let rightTile = (tileIndex + 1) % NUM_COLS === 0 ? null : tiles[tileIndex + 1];
+    let bottomTile = tileIndex + NUM_COLS > tiles.length ? null : tiles[tileIndex + NUM_COLS];
+    let leftTile = (tileIndex - 1) % NUM_COLS === NUM_COLS - 1 ? null : tiles[tileIndex - 1];
+
+    if (topTile && !topTile.collapsed) {
+        let topTileOptions = getTileOptions(tiles, tileIndex - NUM_COLS, NUM_ROWS, NUM_COLS);
+        topTile.entropy = computeEntropy(topTileOptions);
+
+        console.log(`Top tile(${tileIndex - NUM_COLS}) now has ${topTileOptions.length} options.`);
+        console.log(`New entropy: ${topTile.entropy}`);
+    }
+
+    if (rightTile && !rightTile.collapsed) {
+        let rightTileOptions = getTileOptions(tiles, tileIndex + 1, NUM_ROWS, NUM_COLS);
+        rightTile.entropy = computeEntropy(rightTileOptions);
+
+        console.log(`Right tile(${tileIndex + 1}) now has ${rightTileOptions.length} options.`);
+        console.log(`New entropy: ${rightTile.entropy}`);
+    }
+
+    if (bottomTile && !bottomTile.collapsed) {
+        let bottomTileOptions = getTileOptions(tiles, tileIndex + NUM_COLS, NUM_ROWS, NUM_COLS);
+        bottomTile.entropy = computeEntropy(bottomTileOptions);
+
+        console.log(`Bottom tile(${tileIndex + NUM_COLS}) now has ${bottomTileOptions.length} options.`);
+        console.log(`New entropy: ${bottomTile.entropy}`);
+    }
+
+    if (leftTile && !leftTile.collapsed) {
+        let leftTileOptions = getTileOptions(tiles, tileIndex - 1, NUM_ROWS, NUM_COLS);
+        leftTile.entropy = computeEntropy(leftTileOptions);
+
+        console.log(`Left tile(${tileIndex - 1}) now has ${leftTileOptions.length} options.`);
+        console.log(`New entropy: ${leftTile.entropy}`);
+    }
+
+    console.log('=====================================');
+
+    return tiles;
+}
+
+function getTileOptions(tiles, tileIndex, NUM_ROWS, NUM_COLS) {
     let chosenTile = tiles[tileIndex];
 
     let topTile = tileIndex - NUM_COLS < 0 ? null : tiles[tileIndex - NUM_COLS];
@@ -27,20 +128,22 @@ function getTileEntropy(tiles, tileIndex, NUM_ROWS, NUM_COLS) {
     let leftTile = tileIndex - 1 % NUM_COLS === NUM_COLS - 1 ? null : tiles[tileIndex - 1];
 
     let filteredOptions = TILE_SET.filter(tile => {
-        let topMatch = topTile && topTile.collapsed ? topTile.bottom.connection === tile.top.connection : true;
-        let rightMatch = rightTile && rightTile.collapsed ? rightTile.left.connection === tile.right.connection : true;
-        let bottomMatch = bottomTile && bottomTile.collapsed ? bottomTile.top.connection === tile.bottom.connection : true;
-        let leftMatch = leftTile && leftTile.collapsed ? leftTile.right.connection === tile.left.connection : true;
+        let topMatch = topTile && topTile.collapsed ? topTile.connections.bottom === tile.top.connection : true;
+        let rightMatch = rightTile && rightTile.collapsed ? rightTile.connections.left === tile.right.connection : true;
+        let bottomMatch = bottomTile && bottomTile.collapsed ? bottomTile.connections.top === tile.bottom.connection : true;
+        let leftMatch = leftTile && leftTile.collapsed ? leftTile.connections.right === tile.left.connection : true;
 
         return topMatch && rightMatch && bottomMatch && leftMatch;
     })
+
+    return filteredOptions;
 }
 
 export function computeEntropy(entropyTiles) {
     let SUM_WEIGHTS = 0;
 
     let tilesWithWeights = entropyTiles.filter(tile => Object.keys(tile).includes('weight'));
-    if (tilesWithWeights.length != entropyTiles.length) {
+    if (tilesWithWeights.length != entropyTiles.length || entropyTiles.length === 0) {
         SUM_WEIGHTS = entropyTiles.length;
 
         let result = -1 * entropyTiles.reduce((acc, tile) => {
@@ -50,6 +153,7 @@ export function computeEntropy(entropyTiles) {
         return result;
     }
     else {
+        console.log("THIS SHOULDN'T HAPPEN")
         entropyTiles.forEach(tile => {
             SUM_WEIGHTS += tile.weight;
         })
