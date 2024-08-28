@@ -1,6 +1,7 @@
 export const TILE_SET = [
     // BLANK TILE
     {
+        name: 'BLANK',
         top: {
             connection: false
         },
@@ -16,6 +17,7 @@ export const TILE_SET = [
     },
     // CROSS TILE
     {
+        name: 'CROSS',
         top: {
             connection: true
         },
@@ -31,6 +33,7 @@ export const TILE_SET = [
     },
     // HORIZONTAL LINE TILE
     {
+        name: 'HORIZONTAL LINE',
         top: {
             connection: false
         },
@@ -46,6 +49,7 @@ export const TILE_SET = [
     },
     // VERTICAL LINE TILE
     {
+        name: 'VERTICAL LINE',
         top: {
             connection: true
         },
@@ -61,6 +65,7 @@ export const TILE_SET = [
     },
     // LEFT T TILE
     {
+        name: 'LEFT T',
         top: {
             connection: true
         },
@@ -76,6 +81,7 @@ export const TILE_SET = [
     },
     // RIGHT T TILE
     {
+        name: 'RIGHT T',
         top: {
             connection: true
         },
@@ -91,6 +97,7 @@ export const TILE_SET = [
     },
     // TOP RIGHT L TILE
     {
+        name: 'TOP RIGHT L',
         top: {
             connection: true
         },
@@ -106,6 +113,7 @@ export const TILE_SET = [
     },
     // BOTTOM LEFT L TILE
     {
+        name: 'BOTTOM LEFT L',
         top: {
             connection: false
         },
@@ -129,4 +137,5 @@ export const TILE_SET_MAP = {
     4: 'LEFT T',
     5: 'RIGHT T',
     6: 'TOP RIGHT L',
+    7: 'BOTTOM LEFT L',
 }

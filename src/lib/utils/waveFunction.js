@@ -38,7 +38,7 @@ export function collapseTiles(tiles, NUM_ROWS, NUM_COLS) {
 
                 let tempTiles = [...tiles];
 
-                console.log(`assigning tile ${TILE_SET_MAP[chosenTileIndex]} to index: ${minEntropyTileIndex}`);
+                console.log(`assigning tile ${chosenTileConfig.name} to index: ${minEntropyTileIndex}`);
                 tempTiles[minEntropyTileIndex] = {
                     order: iterations,
                     collapsed: true,
@@ -55,6 +55,12 @@ export function collapseTiles(tiles, NUM_ROWS, NUM_COLS) {
                 tiles = tempTiles;
             } else {
                 console.log('NO OPTIONS FOR TILE', minEntropyTileIndex);
+
+                let topTile = minEntropyTileIndex - NUM_COLS < 0 ? null : tiles[minEntropyTileIndex - NUM_COLS];
+                let rightTile = (minEntropyTileIndex + 1) % NUM_COLS === 0 ? null : tiles[minEntropyTileIndex + 1];
+                let bottomTile = minEntropyTileIndex + NUM_COLS > tiles.length ? null : tiles[minEntropyTileIndex + NUM_COLS];
+                let leftTile = (minEntropyTileIndex - 1) % NUM_COLS === NUM_COLS - 1 ? null : tiles[minEntropyTileIndex - 1];
+                console.log(topTile, rightTile, bottomTile, leftTile);
             }
 
         }
@@ -160,7 +166,7 @@ export function computeEntropy(entropyTiles) {
 
         // REST OF WEIGHTED ENTROPY CALCULATION
 
-        return;
+        return -1;
     }
 
 
