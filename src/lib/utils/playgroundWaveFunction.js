@@ -1,4 +1,4 @@
-import { TILE_SET, TILE_SET_MAP } from "./PlayGroundTiles";
+import { TILE_SET, TILE_SET_MAP } from "./playGroundTiles";
 
 export function collapseTiles(tiles, NUM_ROWS, NUM_COLS) {
 
