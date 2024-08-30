@@ -3,8 +3,8 @@
 	import { TILE_SET } from '$lib/utils/playGroundTiles';
 	import { onMount } from 'svelte';
 
-	const NUM_ROWS = 5;
-	const NUM_COLS = 10;
+	const NUM_ROWS = 8;
+	const NUM_COLS = 20;
 
 	const DIRECTIONS = ['left', 'right', 'top', 'bottom'];
 	const COLOR_LIST = ['red', 'goldenrod', 'orange', 'aliceblue'];

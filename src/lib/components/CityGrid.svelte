@@ -1,14 +1,36 @@
 <script>
+	import { onMount } from 'svelte';
+	import { matchTile, TILE_SET } from '$lib/utils/cityTiles';
+
 	// The number of rows and columns must be odd
-	const NUM_ROWS = 5;
-	const NUM_COLS = 5;
+	const NUM_ROWS = 9;
+	const NUM_COLS = 9;
 	const SIDE = 100;
 	const HEIGHT = 100;
 
 	let vertical_distance = SIDE / Math.cos(Math.PI / 3) / 2;
 	let horizontal_distance = SIDE / Math.sin(Math.PI / 3);
 
-	function computeTileVisible(row_num, col_num) {
+	let visibleTileList = [];
+
+	$: sortedVisibleTileList = visibleTileList.sort(visibleTileListSort);
+	// $: console.log(sortedVisibleTileList);
+
+	function visibleTileListSort(a, b) {
+		let aSum = a.row + a.col;
+		let bSum = b.row + b.col;
+		if (aSum < bSum) {
+			return -1;
+		} else if (aSum > bSum) {
+			return 1;
+		} else {
+			if (a.col < b.col) {
+				return -1;
+			}
+		}
+	}
+
+	function computeTileHidden(row_num, col_num) {
 		let horizontal = Math.abs(Math.floor(NUM_COLS / 2) - row_num);
 		let vertical = Math.abs(Math.floor(NUM_ROWS / 2) - col_num);
 
@@ -20,8 +42,46 @@
 			return true;
 		}
 
-		console.log('visible');
+		visibleTileList.push({ row: row_num, col: col_num });
+		visibleTileList = visibleTileList;
 		return false;
+	}
+
+	let tiles = [];
+	let computedGrid = Array.from({ length: NUM_ROWS }, () =>
+		Array.from({ length: NUM_COLS }, () => ({}))
+	);
+
+	onMount(() => {
+		randomInitTiles();
+	});
+
+	function randomInitTiles() {
+		tiles = Array.from({ length: Math.ceil(NUM_ROWS / 2) * Math.ceil(NUM_COLS / 2) }, () => ({}));
+
+		for (let i = 0; i < tiles.length; i++) {
+			let tile = tiles[i];
+
+			tile.collapsed = false;
+
+			let randomTile = TILE_SET[Math.floor(Math.random() * TILE_SET.length)];
+
+			tile.connections = {
+				top: randomTile.top.connection,
+				right: randomTile.right.connection,
+				bottom: randomTile.bottom.connection,
+				left: randomTile.left.connection
+			};
+			tile.entropy = 100;
+
+			// tile.color = COLOR_LIST[Math.floor(Math.random() * COLOR_LIST.length)];
+
+			let chosenTile = sortedVisibleTileList[i];
+			computedGrid[chosenTile.row][chosenTile.col] = tile;
+			computedGrid[chosenTile.row][chosenTile.col].name = randomTile.name;
+		}
+
+		console.log('computedGrid: ', computedGrid);
 	}
 </script>
 
@@ -30,10 +90,14 @@
 	style="--vertical-distance: {vertical_distance /
 		2}px; --horizontal-distance: {horizontal_distance}px; --side: {SIDE}px; --height: {HEIGHT}px;"
 >
-	{#each Array.from({ length: NUM_ROWS }) as _, row_num}
+	{#each computedGrid as row, row_num}
 		<div class="row">
-			{#each Array.from({ length: NUM_COLS }) as _, col_num}
-				<div class="tile" class:hidden={computeTileVisible(row_num, col_num)}>
+			{#each row as tile, col_num}
+				<div
+					class="tile"
+					style="--background-image: {tile.name ? `url(./cube-${tile.name}.png)` : 'none'};"
+					class:hidden={computeTileHidden(row_num, col_num)}
+				>
 					<div class="dot"></div>
 				</div>
 			{/each}
@@ -46,7 +110,9 @@
 		display: flex;
 		flex-direction: column;
 		margin-top: 250px;
-		margin-left: 100px;
+		// margin-left: calc(var(--horizontal-distance) * 1);
+		margin: 250px auto;
+		width: fit-content;
 
 		.row {
 			display: flex;
@@ -57,13 +123,12 @@
 				height: var(--vertical-distance);
 				position: relative;
 
-				border: 1px solid #ddd;
-
 				&.hidden {
 					opacity: 0;
 				}
 
 				.dot {
+					display: none;
 					width: 5px;
 					height: 5px;
 					background-color: #999;
@@ -80,12 +145,14 @@
 					bottom: 0;
 					left: 50%;
 					transform: translate(-50%, 0);
-					// height: calc(var(--height) + 2 * var(--vertical-distance));
 					height: calc(2 * var(--horizontal-distance));
 					width: calc(2 * var(--horizontal-distance));
-					background-color: #999;
-					opacity: 0.5;
-					clip-path: polygon(0 22%, 50% 0, 100% 22%, 100% 78%, 50% 100%, 0 78%);
+					// background-color: #999;
+					// opacity: 0.5;
+					// background-image: url('./cube-cross.png');
+					// clip-path: polygon(0 22%, 50% 0, 100% 22%, 100% 78%, 50% 100%, 0 78%);
+					background-image: var(--background-image);
+					background-size: 100% 100%;
 				}
 			}
 		}
