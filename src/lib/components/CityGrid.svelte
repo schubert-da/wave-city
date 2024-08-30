@@ -1,6 +1,7 @@
 <script>
 	import { onMount } from 'svelte';
 	import { matchTile, TILE_SET } from '$lib/utils/cityTiles';
+	import { collapseTiles } from '$lib/utils/cityWaveFunction';
 
 	// The number of rows and columns must be odd
 	const NUM_ROWS = 9;
@@ -14,7 +15,6 @@
 	let visibleTileList = [];
 
 	$: sortedVisibleTileList = visibleTileList.sort(visibleTileListSort);
-	// $: console.log(sortedVisibleTileList);
 
 	function visibleTileListSort(a, b) {
 		let aSum = a.row + a.col;
@@ -53,7 +53,12 @@
 	);
 
 	onMount(() => {
-		randomInitTiles();
+		initTiles();
+		tiles = collapseTiles(tiles, Math.ceil(NUM_ROWS / 2), Math.ceil(NUM_COLS / 2));
+		tiles.forEach((tile, index) => {
+			let chosenTile = sortedVisibleTileList[index];
+			computedGrid[chosenTile.row][chosenTile.col] = tile;
+		});
 	});
 
 	function randomInitTiles() {
@@ -67,14 +72,12 @@
 			let randomTile = TILE_SET[Math.floor(Math.random() * TILE_SET.length)];
 
 			tile.connections = {
-				top: randomTile.top.connection,
-				right: randomTile.right.connection,
-				bottom: randomTile.bottom.connection,
-				left: randomTile.left.connection
+				top: randomTile.connections.top,
+				right: randomTile.connections.right,
+				bottom: randomTile.connections.bottom,
+				left: randomTile.connections.left
 			};
 			tile.entropy = 100;
-
-			// tile.color = COLOR_LIST[Math.floor(Math.random() * COLOR_LIST.length)];
 
 			let chosenTile = sortedVisibleTileList[i];
 			computedGrid[chosenTile.row][chosenTile.col] = tile;
@@ -82,6 +85,29 @@
 		}
 
 		console.log('computedGrid: ', computedGrid);
+	}
+
+	function initTiles() {
+		tiles = Array.from({ length: Math.ceil(NUM_ROWS / 2) * Math.ceil(NUM_COLS / 2) }, () => ({}));
+
+		for (let i = 0; i < tiles.length; i++) {
+			let tile = tiles[i];
+
+			tile.collapsed = false;
+			tile.order = 0;
+			tile.connections = {
+				top: false,
+				bottom: false,
+				left: false,
+				right: false
+			};
+
+			tile.entropy = Math.log2(TILE_SET.length);
+
+			let chosenTile = sortedVisibleTileList[i];
+			computedGrid[chosenTile.row][chosenTile.col] = tile;
+			computedGrid[chosenTile.row][chosenTile.col].name = 'blank';
+		}
 	}
 </script>
 

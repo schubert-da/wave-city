@@ -1,4 +1,4 @@
-import { TILE_SET, TILE_SET_MAP } from "./playGroundTiles";
+import { TILE_SET } from "./cityTiles";
 
 export function collapseTiles(tiles, NUM_ROWS, NUM_COLS) {
 
@@ -43,13 +43,13 @@ export function collapseTiles(tiles, NUM_ROWS, NUM_COLS) {
                     order: iterations,
                     collapsed: true,
                     connections: {
-                        top: chosenTileConfig.top.connection,
-                        bottom: chosenTileConfig.bottom.connection,
-                        left: chosenTileConfig.left.connection,
-                        right: chosenTileConfig.right.connection
+                        top: chosenTileConfig.connections.top,
+                        right: chosenTileConfig.connections.right,
+                        bottom: chosenTileConfig.connections.bottom,
+                        left: chosenTileConfig.connections.left
                     },
+                    name: chosenTileConfig.name,
                     entropy: 0,
-                    color: "TBD"
                 }
 
                 tiles = tempTiles;
@@ -134,10 +134,10 @@ function getTileOptions(tiles, tileIndex, NUM_ROWS, NUM_COLS) {
     let leftTile = (tileIndex - 1) % NUM_COLS === NUM_COLS - 1 ? null : tiles[tileIndex - 1];
 
     let filteredOptions = TILE_SET.filter(tile => {
-        let topMatch = topTile && topTile.collapsed ? topTile.connections.bottom === tile.top.connection : true;
-        let rightMatch = rightTile && rightTile.collapsed ? rightTile.connections.left === tile.right.connection : true;
-        let bottomMatch = bottomTile && bottomTile.collapsed ? bottomTile.connections.top === tile.bottom.connection : true;
-        let leftMatch = leftTile && leftTile.collapsed ? leftTile.connections.right === tile.left.connection : true;
+        let topMatch = topTile && topTile.collapsed ? topTile.connections.bottom === tile.connections.top : true;
+        let rightMatch = rightTile && rightTile.collapsed ? rightTile.connections.left === tile.connections.right : true;
+        let bottomMatch = bottomTile && bottomTile.collapsed ? bottomTile.connections.top === tile.connections.bottom : true;
+        let leftMatch = leftTile && leftTile.collapsed ? leftTile.connections.right === tile.connections.left : true;
 
         return topMatch && rightMatch && bottomMatch && leftMatch;
     })

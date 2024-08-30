@@ -2,65 +2,41 @@ export const TILE_SET = [
     // BLANK TILE
     {
         name: 'blank',
-        top: {
-            connection: false
-        },
-        right: {
-            connection: false
-        },
-        bottom: {
-            connection: false
-        },
-        left: {
-            connection: false
+        connections: {
+            top: false,
+            right: false,
+            bottom: false,
+            left: false
         }
     },
     // CROSS TILE
     {
         name: 'cross',
-        top: {
-            connection: true
-        },
-        right: {
-            connection: true
-        },
-        bottom: {
-            connection: true
-        },
-        left: {
-            connection: true
+        connections: {
+            top: true,
+            right: true,
+            bottom: true,
+            left: true
         }
     },
     // HORIZONTAL LINE TILE
     {
         name: 'horizontal-line',
-        top: {
-            connection: false
-        },
-        right: {
-            connection: true
-        },
-        bottom: {
-            connection: false
-        },
-        left: {
-            connection: true
+        connections: {
+            top: false,
+            right: true,
+            bottom: false,
+            left: true
         }
     },
     // VERTICAL LINE TILE
     {
         name: 'vertical-line',
-        top: {
-            connection: true
-        },
-        right: {
-            connection: false
-        },
-        bottom: {
-            connection: true
-        },
-        left: {
-            connection: false
+        connections: {
+            top: true,
+            right: false,
+            bottom: true,
+            left: false
         }
     }
 ];

@@ -1,5 +1,5 @@
 <script>
-	import { collapseTiles, computeEntropy } from '$lib/utils/playgroundWaveFunction';
+	import { collapseTiles } from '$lib/utils/playgroundWaveFunction';
 	import { TILE_SET } from '$lib/utils/playGroundTiles';
 	import { onMount } from 'svelte';
 
