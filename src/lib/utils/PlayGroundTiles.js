@@ -64,37 +64,69 @@ export const TILE_SET = [
         }
     },
     // LEFT T TILE
-    {
-        name: 'LEFT T',
-        top: {
-            connection: true
-        },
-        right: {
-            connection: false
-        },
-        bottom: {
-            connection: true
-        },
-        left: {
-            connection: true
-        }
-    },
+    // {
+    //     name: 'LEFT T',
+    //     top: {
+    //         connection: true
+    //     },
+    //     right: {
+    //         connection: false
+    //     },
+    //     bottom: {
+    //         connection: true
+    //     },
+    //     left: {
+    //         connection: true
+    //     }
+    // },
     // RIGHT T TILE
-    {
-        name: 'RIGHT T',
-        top: {
-            connection: true
-        },
-        right: {
-            connection: true
-        },
-        bottom: {
-            connection: true
-        },
-        left: {
-            connection: false
-        }
-    },
+    // {
+    //     name: 'RIGHT T',
+    //     top: {
+    //         connection: true
+    //     },
+    //     right: {
+    //         connection: true
+    //     },
+    //     bottom: {
+    //         connection: true
+    //     },
+    //     left: {
+    //         connection: false
+    //     }
+    // },
+    // TOP T TILE
+    // {
+    //     name: 'TOP T',
+    //     top: {
+    //         connection: true
+    //     },
+    //     right: {
+    //         connection: true
+    //     },
+    //     bottom: {
+    //         connection: false
+    //     },
+    //     left: {
+    //         connection: true
+    //     }
+    // },
+    // BoTTOM T TILE
+    // {
+    //     name: 'BOTTOM T',
+    //     top: {
+    //         connection: false
+    //     },
+    //     right: {
+    //         connection: true
+    //     },
+    //     bottom: {
+    //         connection: true
+    //     },
+    //     left: {
+    //         connection: true
+    //     }
+    // },
     // TOP RIGHT L TILE
     {
         name: 'TOP RIGHT L',
@@ -127,6 +159,38 @@ export const TILE_SET = [
             connection: true
         }
     },
+    // TOP LEFT L TILE
+    {
+        name: 'TOP LEFT L',
+        top: {
+            connection: true
+        },
+        right: {
+            connection: false
+        },
+        bottom: {
+            connection: false
+        },
+        left: {
+            connection: true
+        }
+    },
+    // BOTTOM RIGHT L TILE
+    {
+        name: 'BOTTOM RIGHT L',
+        top: {
+            connection: false
+        },
+        right: {
+            connection: true
+        },
+        bottom: {
+            connection: true
+        },
+        left: {
+            connection: false
+        }
+    }
 ]
 
 export const TILE_SET_MAP = {

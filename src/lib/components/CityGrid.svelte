@@ -12,6 +12,8 @@
 	let vertical_distance = SIDE / Math.cos(Math.PI / 3) / 2;
 	let horizontal_distance = SIDE / Math.sin(Math.PI / 3);
 
+	let startAnimation = false;
+
 	let visibleTileList = [];
 
 	$: sortedVisibleTileList = visibleTileList.sort(visibleTileListSort);
@@ -59,6 +61,8 @@
 			let chosenTile = sortedVisibleTileList[index];
 			computedGrid[chosenTile.row][chosenTile.col] = tile;
 		});
+
+		startAnimation = true;
 	});
 
 	function randomInitTiles() {
@@ -113,6 +117,7 @@
 
 <div
 	class="grid"
+	class:animate={startAnimation}
 	style="--vertical-distance: {vertical_distance /
 		2}px; --horizontal-distance: {horizontal_distance}px; --side: {SIDE}px; --height: {HEIGHT}px;"
 >
@@ -121,7 +126,9 @@
 			{#each row as tile, col_num}
 				<div
 					class="tile"
-					style="--background-image: {tile.name ? `url(./cube-${tile.name}.png)` : 'none'};"
+					style="--background-image: {tile.name
+						? `url(./cube-${tile.name}.png)`
+						: 'none'}; --transition-delay: {tile.order * 0.15}s"
 					class:hidden={computeTileHidden(row_num, col_num)}
 				>
 					<div class="dot"></div>
@@ -179,6 +186,22 @@
 					// clip-path: polygon(0 22%, 50% 0, 100% 22%, 100% 78%, 50% 100%, 0 78%);
 					background-image: var(--background-image);
 					background-size: 100% 100%;
+
+					opacity: 0;
+					transition: opacity 1s cubic-bezier(0.075, 0.82, 0.165, 1);
+					transition-delay: var(--transition-delay);
+				}
+			}
+		}
+
+		&.animate {
+			.row {
+				.tile {
+					&:not(.hidden) {
+						&:after {
+							opacity: 1;
+						}
+					}
 				}
 			}
 		}

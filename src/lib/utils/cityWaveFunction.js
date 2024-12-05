@@ -5,6 +5,12 @@ export function collapseTiles(tiles, NUM_ROWS, NUM_COLS) {
     let allCollapsed = false;
     let iterations = 0;
 
+    tiles.forEach((tile, index) => {
+        tiles[index].isSameElevation = getElevationValue()
+    });
+
+    console.log('original tiles: ', tiles)
+
     while (allCollapsed === false) {
         console.log('starting iteration:', iterations);
 
@@ -42,6 +48,7 @@ export function collapseTiles(tiles, NUM_ROWS, NUM_COLS) {
                 tempTiles[minEntropyTileIndex] = {
                     order: iterations,
                     collapsed: true,
+                    elevation: chosenTileConfig.elevation,
                     connections: {
                         top: chosenTileConfig.connections.top,
                         right: chosenTileConfig.connections.right,
@@ -91,6 +98,7 @@ function updateSurroundingEntropy(tiles, tileIndex, NUM_ROWS, NUM_COLS) {
     if (topTile && !topTile.collapsed) {
         let topTileOptions = getTileOptions(tiles, tileIndex - NUM_COLS, NUM_ROWS, NUM_COLS);
         topTile.entropy = computeEntropy(topTileOptions);
+        console.log('topTileOptions', topTileOptions);
 
         console.log(`Top tile(${tileIndex - NUM_COLS}) now has ${topTileOptions.length} options.`);
         console.log(`New entropy: ${topTile.entropy}`);
@@ -99,6 +107,7 @@ function updateSurroundingEntropy(tiles, tileIndex, NUM_ROWS, NUM_COLS) {
     if (rightTile && !rightTile.collapsed) {
         let rightTileOptions = getTileOptions(tiles, tileIndex + 1, NUM_ROWS, NUM_COLS);
         rightTile.entropy = computeEntropy(rightTileOptions);
+        console.log('rightTileOptions', rightTileOptions);
 
         console.log(`Right tile(${tileIndex + 1}) now has ${rightTileOptions.length} options.`);
         console.log(`New entropy: ${rightTile.entropy}`);
@@ -107,6 +116,7 @@ function updateSurroundingEntropy(tiles, tileIndex, NUM_ROWS, NUM_COLS) {
     if (bottomTile && !bottomTile.collapsed) {
         let bottomTileOptions = getTileOptions(tiles, tileIndex + NUM_COLS, NUM_ROWS, NUM_COLS);
         bottomTile.entropy = computeEntropy(bottomTileOptions);
+        console.log('bottomTileOptions', bottomTileOptions);
 
         console.log(`Bottom tile(${tileIndex + NUM_COLS}) now has ${bottomTileOptions.length} options.`);
         console.log(`New entropy: ${bottomTile.entropy}`);
@@ -115,6 +125,7 @@ function updateSurroundingEntropy(tiles, tileIndex, NUM_ROWS, NUM_COLS) {
     if (leftTile && !leftTile.collapsed) {
         let leftTileOptions = getTileOptions(tiles, tileIndex - 1, NUM_ROWS, NUM_COLS);
         leftTile.entropy = computeEntropy(leftTileOptions);
+        console.log('leftTileOptions', leftTileOptions);
 
         console.log(`Left tile(${tileIndex - 1}) now has ${leftTileOptions.length} options.`);
         console.log(`New entropy: ${leftTile.entropy}`);
@@ -134,15 +145,37 @@ function getTileOptions(tiles, tileIndex, NUM_ROWS, NUM_COLS) {
     let leftTile = (tileIndex - 1) % NUM_COLS === NUM_COLS - 1 ? null : tiles[tileIndex - 1];
 
     let filteredOptions = TILE_SET.filter(tile => {
-        let topMatch = topTile && topTile.collapsed ? topTile.connections.bottom === tile.connections.top : true;
-        let rightMatch = rightTile && rightTile.collapsed ? rightTile.connections.left === tile.connections.right : true;
-        let bottomMatch = bottomTile && bottomTile.collapsed ? bottomTile.connections.top === tile.connections.bottom : true;
-        let leftMatch = leftTile && leftTile.collapsed ? leftTile.connections.right === tile.connections.left : true;
+        let topMatch = checkMatchConstraints(topTile, tile, 'bottom', 'top', chosenTile.isSameElevation);
+        let rightMatch = checkMatchConstraints(rightTile, tile, 'left', 'right', chosenTile.isSameElevation);
+        let bottomMatch = checkMatchConstraints(bottomTile, tile, 'top', 'bottom', chosenTile.isSameElevation);
+        let leftMatch = checkMatchConstraints(leftTile, tile, 'right', 'left', chosenTile.isSameElevation);
+
+        // let bottomMatch = bottomTile && bottomTile.collapsed ? bottomTile.connections.top === tile.connections.bottom : true;
+        // let leftMatch = leftTile && leftTile.collapsed ? leftTile.connections.right === tile.connections.left : true;
 
         return topMatch && rightMatch && bottomMatch && leftMatch;
     })
 
     return filteredOptions;
+}
+
+function getElevationValue() {
+    const ELEVATION_PARAM = 90;
+
+    return Math.random() * 100 < ELEVATION_PARAM;
+}
+
+function checkMatchConstraints(newTile, originalTile, newDirection, originalDirection, isSameElevation) {
+    if (newTile && newTile.collapsed) {
+        let connectionCheck = newTile.connections[newDirection] === originalTile.connections[originalDirection];
+
+        // let elevationCheck = isSameElevation ? newTile.elevation === originalTile.elevation : newTile.elevation != originalTile.elevation;
+        let elevationCheck = true;
+        return connectionCheck && elevationCheck;
+    }
+    else {
+        return true
+    }
 }
 
 export function computeEntropy(entropyTiles) {
