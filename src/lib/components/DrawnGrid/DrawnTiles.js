@@ -4,7 +4,7 @@ export const TILE_SET = [
         name: 'BLANK',
         image: {
             paths: ['tile-blank.png'],
-            rotation: [0]
+            rotation: [0, 90, 180, 270]
         },
         top: {
             connection: false
@@ -23,7 +23,8 @@ export const TILE_SET = [
     {
         name: 'CROSS',
         image: {
-            paths: ['tile-cross.png', 'tile-cross-2.png'],
+            // paths: ['tile-cross.png', 'tile-cross-2.png'],
+            paths: ['tile-cross-2.png'],
             rotation: [0, 90, 180, 270]
         },
         top: {
@@ -43,7 +44,8 @@ export const TILE_SET = [
     {
         name: 'HORIZONTAL LINE',
         image: {
-            paths: ['tile-horizontal.png', 'tile-horizontal-2.png'],
+            // paths: ['tile-horizontal.png', 'tile-horizontal-2.png', 'tile-horizontal-3.png'],
+            paths: ['tile-horizontal-2.png', 'tile-horizontal-3.png'],
             rotation: [0, 180]
         },
         top: {
@@ -63,7 +65,8 @@ export const TILE_SET = [
     {
         name: 'VERTICAL LINE',
         image: {
-            paths: ['tile-horizontal.png', 'tile-horizontal-2.png'],
+            // paths: ['tile-horizontal.png', 'tile-horizontal-2.png', 'tile-horizontal-3.png'],
+            paths: ['tile-horizontal-2.png', 'tile-horizontal-3.png'],
             rotation: [90, 270]
         },
         top: {
@@ -83,7 +86,7 @@ export const TILE_SET = [
     {
         name: 'LEFT T',
         image: {
-            paths: ['tile-t.png'],
+            paths: ['tile-t.png', 'tile-t-2.png'],
             rotation: [0]
         },
         top: {
@@ -103,7 +106,7 @@ export const TILE_SET = [
     {
         name: 'RIGHT T',
         image: {
-            paths: ['tile-t.png'],
+            paths: ['tile-t.png', 'tile-t-2.png'],
             rotation: [180]
         },
         top: {
@@ -123,7 +126,7 @@ export const TILE_SET = [
     {
         name: 'TOP T',
         image: {
-            paths: ['tile-t.png'],
+            paths: ['tile-t.png', 'tile-t-2.png'],
             rotation: [90]
         },
         top: {
@@ -143,7 +146,7 @@ export const TILE_SET = [
     {
         name: 'BOTTOM T',
         image: {
-            paths: ['tile-t.png'],
+            paths: ['tile-t.png', 'tile-t-2.png'],
             rotation: [270]
         },
         top: {
