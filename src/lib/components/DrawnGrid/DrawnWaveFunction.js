@@ -135,10 +135,10 @@ function getTileOptions(tiles, tileIndex, NUM_ROWS, NUM_COLS) {
     let leftTile = (tileIndex - 1) % NUM_COLS === NUM_COLS - 1 ? null : tiles[tileIndex - 1];
 
     let filteredOptions = TILE_SET.filter(tile => {
-        let topMatch = topTile && topTile.collapsed ? topTile.connections.bottom === tile.top.connection : topTile ? true : tile.top.connection === false;
-        let rightMatch = rightTile && rightTile.collapsed ? rightTile.connections.left === tile.right.connection : rightTile ? true : tile.right.connection === false;
-        let bottomMatch = bottomTile && bottomTile.collapsed ? bottomTile.connections.top === tile.bottom.connection : bottomTile ? true : tile.bottom.connection === false;
-        let leftMatch = leftTile && leftTile.collapsed ? leftTile.connections.right === tile.left.connection : leftTile ? true : tile.left.connection === false;
+        let topMatch = topTile && topTile.collapsed ? topTile.connections.bottom === tile.top.connection : true;
+        let rightMatch = rightTile && rightTile.collapsed ? rightTile.connections.left === tile.right.connection : true;
+        let bottomMatch = bottomTile && bottomTile.collapsed ? bottomTile.connections.top === tile.bottom.connection : true;
+        let leftMatch = leftTile && leftTile.collapsed ? leftTile.connections.right === tile.left.connection : true;
 
         return topMatch && rightMatch && bottomMatch && leftMatch;
     })
